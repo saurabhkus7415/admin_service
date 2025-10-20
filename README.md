@@ -1,4 +1,4 @@
-# MIS Management Backend (Example)
+# MIS Management Backend 
 
 ## Overview
 Fastify + Sequelize backend implementing MIS upload + approval workflows, with audit trail.

@@ -71,8 +71,8 @@ module.exports = async function (fastify, opts) {
         await logAudit({
           action: "approve",
           entity_type: reqRec.entity_type,
-          entity_id: JSON.stringify([created]), // store as JSON array
-          user_id: request.user?.role || null, // use authenticated user
+          entity_id: JSON.stringify([created]), 
+          user_id: request.user?.role || null, 
           remarks: `Approved request ${id}`,
           transaction: t,
         });
@@ -106,7 +106,7 @@ module.exports = async function (fastify, opts) {
       await logAudit({
         action: "reject",
         entity_type: reqRec.entity_type,
-        entity_id: JSON.stringify([reqRec]), // store as JSON array
+        entity_id: JSON.stringify([reqRec]), 
         user_id: request.user?.role || null,
         remarks: remarks || "Rejected via API",
       });

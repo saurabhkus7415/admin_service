@@ -5,15 +5,18 @@ module.exports = async function (fastify, opts) {
   const { ApprovalRequest, MisStudent, MisTeacher, AuditTrail } =
     fastify.models;
   const logAudit = makeAudit({ AuditTrail });
-
   fastify.get(
-    "/approvals/pending",
+    "/approvals",
     { preHandler: [fastify.authenticate] },
     async (request, reply) => {
-      const pending = await ApprovalRequest.findAll({
-        where: { status: "Pending" },
+      const { status } = request.query;
+      const whereCondition = status
+        ? { status }
+        : { status: ["Pending", "Rejected"] };
+      const approvals = await ApprovalRequest.findAll({
+        where: whereCondition,
       });
-      return reply.send({ count: pending.length, data: pending });
+      return reply.send({ count: approvals.length, data: approvals });
     }
   );
 
@@ -71,8 +74,8 @@ module.exports = async function (fastify, opts) {
         await logAudit({
           action: "approve",
           entity_type: reqRec.entity_type,
-          entity_id: JSON.stringify([created]), 
-          user_id: request.user?.role || null, 
+          entity_id: JSON.stringify([created]),
+          user_id: request.user?.role || null,
           remarks: `Approved request ${id}`,
           transaction: t,
         });
@@ -106,7 +109,7 @@ module.exports = async function (fastify, opts) {
       await logAudit({
         action: "reject",
         entity_type: reqRec.entity_type,
-        entity_id: JSON.stringify([reqRec]), 
+        entity_id: JSON.stringify([reqRec]),
         user_id: request.user?.role || null,
         remarks: remarks || "Rejected via API",
       });

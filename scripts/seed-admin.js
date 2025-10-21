@@ -58,7 +58,7 @@ module.exports = async ({ sequelize, User, ApprovalRequest }, fastify) => {
         },
         status: "Pending",
         remarks: `Dummy student request ${i + 1}`,
-        requested_by: adminId,
+        requested_by: 'Ramesh',
       }));
 
       const teacherRequests = Array.from({ length: 10 }).map((_, i) => ({
@@ -73,7 +73,7 @@ module.exports = async ({ sequelize, User, ApprovalRequest }, fastify) => {
         },
         status: "Pending",
         remarks: `Dummy teacher request ${i + 1}`,
-        requested_by: adminId,
+        requested_by: 'Rakesh',
       }));
 
       await ApprovalRequest.bulkCreate([...studentRequests, ...teacherRequests]);

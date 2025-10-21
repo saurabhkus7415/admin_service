@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS approval_requests (
   data_fields JSON NOT NULL,
   status ENUM('Pending','Approved','Rejected') NOT NULL DEFAULT 'Pending',
   remarks TEXT,
-  requested_by INT UNSIGNED,
+  requested_by VARCHAR(255) ,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

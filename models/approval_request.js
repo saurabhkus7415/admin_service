@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     data_fields: { type: DataTypes.JSON, allowNull: false },
     status: { type: DataTypes.ENUM('Pending', 'Approved', 'Rejected'), defaultValue: 'Pending' },
     remarks: { type: DataTypes.TEXT, allowNull: true },
-    requested_by: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true }
+    requested_by: { type: DataTypes.STRING, allowNull: true }
   }, { underscored: true, timestamps: true });
 
   return ApprovalRequest;

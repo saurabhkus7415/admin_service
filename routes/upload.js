@@ -3,6 +3,7 @@ const Papa = require("papaparse");
 const XLSX = require("xlsx");
 const { validateStudent, validateTeacher } = require("../utils/validate");
 const makeAudit = require("../helpers/audit");
+const { uploadsCounter } = require("../metrics/business");
 
 module.exports = async function (fastify, opts) {
   const { MisStudent, MisTeacher, AuditTrail } = fastify.models;
@@ -118,6 +119,10 @@ module.exports = async function (fastify, opts) {
           });
 
           await t.commit();
+
+          // ✅ PROMETHEUS METRIC
+          uploadsCounter.inc({ type: "students" });
+
           return reply
             .code(201)
             .send({ message: "uploaded", count: inserted.length });
@@ -205,6 +210,8 @@ module.exports = async function (fastify, opts) {
           });
 
           await t.commit();
+
+          uploadsCounter.inc({ type: "teachers" });
           return reply
             .code(201)
             .send({ message: "uploaded", count: inserted.length });

@@ -1,5 +1,6 @@
 const makeAudit = require("../helpers/audit");
 const { validateStudent, validateTeacher } = require("../utils/validate");
+const { approvalsCounter } = require("../metrics/business");
 
 module.exports = async function (fastify, opts) {
   const { ApprovalRequest, MisStudent, MisTeacher, AuditTrail } =
@@ -16,6 +17,9 @@ module.exports = async function (fastify, opts) {
       const approvals = await ApprovalRequest.findAll({
         where: whereCondition,
       });
+      // ✅ PROMETHEUS METRIC
+      approvalsCounter.inc({ status: "approved fetch" });
+
       return reply.send({ count: approvals.length, data: approvals });
     }
   );
@@ -81,6 +85,8 @@ module.exports = async function (fastify, opts) {
         });
 
         await t.commit();
+        // ✅ METRIC ONLY AFTER SUCCESS
+        approvalsCounter.inc({ status: "approved" });
         return reply.send({ message: "approved" });
       } catch (err) {
         await t.rollback();
@@ -113,7 +119,8 @@ module.exports = async function (fastify, opts) {
         user_id: request.user?.role || null,
         remarks: remarks || "Rejected via API",
       });
-
+      // ✅ METRIC FOR REJECTION
+      approvalsCounter.inc({ status: "rejected" });
       return reply.send({ message: "rejected" });
     }
   );
